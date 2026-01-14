@@ -19,7 +19,6 @@ public class LibroDto {
 
     public LibroDto(){
 
-
     }
 
     public String getId() {
