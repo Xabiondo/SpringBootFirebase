@@ -7,6 +7,7 @@ import com.google.api.core.ApiClock;
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.*;
 import com.google.firebase.cloud.FirestoreClient;
+import com.google.protobuf.Api;
 import org.example.dto.LibroDto;
 import org.springframework.stereotype.Service;
 
@@ -44,7 +45,9 @@ public class LibroService {
         DocumentReference referenciaDocumento = baseDeDatos.collection(COLLECTION_NAME).document(id);
 
         ApiFuture<DocumentSnapshot> future = referenciaDocumento.get();
+
         DocumentSnapshot documento = future.get();
+
 
         if (documento.exists()){
             return documento.toObject(LibroDto.class) ;
@@ -77,13 +80,17 @@ public class LibroService {
         }
 
     }
-    public Boolean borrarLibro(String id){
+    public Boolean borrarLibro(String id) throws ExecutionException, InterruptedException {
         Firestore baseDeDatos = FirestoreClient.getFirestore() ;
         DocumentReference referenciaDocumento = baseDeDatos.collection(COLLECTION_NAME).document(id) ;
 
-        ApiFuture<DocumentSnapshot> documento = referenciaDocumento.get();
-        documento.
-
+        try {
+            ApiFuture<WriteResult> futuro = referenciaDocumento.delete() ;
+            futuro.get() ;
+            return  true ;
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
 
 
     }
