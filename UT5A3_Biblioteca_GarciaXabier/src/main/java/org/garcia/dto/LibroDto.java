@@ -1,32 +1,37 @@
-package org.example.dto;
+package org.garcia.dto;
 
-import java.lang.reflect.Array;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Positive;
+
 import java.util.ArrayList;
 
 public class LibroDto {
 
-    private String id ;
 
-
+    @NotBlank(message = "el titulo es obligatorio")
     private String titulo ;
+
+    @NotBlank(message = "el autor es obligatorio")
     private String autor ;
+
+    @NotEmpty(message = "debe de haber al menos un género")
     private ArrayList<String> generos ;
-    private int anyoPublicacion ;
-    private  boolean disponible ;
-    private  int numPaginas ;
-    private double valoracionMedia  ;
+
+    @Min(value = 1000  , message = "el año no es válido")
+    private Integer anyoPublicacion ;
+    private  Boolean disponible ;
+
+    @Positive(message = "el número de páginas no puede ser negativo")
+    private  Integer numPaginas ;
+    private Double valoracionMedia  ;
+
+
+
     private ArrayList<String> etiquetas ;
 
     public LibroDto(){
-
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
 
     }
 
@@ -54,35 +59,35 @@ public class LibroDto {
         this.generos = generos;
     }
 
-    public int getAnyoPublicacion() {
+    public Integer getAnyoPublicacion() {
         return anyoPublicacion;
     }
 
-    public void setAnyoPublicacion(int anyoPublicacion) {
+    public void setAnyoPublicacion(Integer anyoPublicacion) {
         this.anyoPublicacion = anyoPublicacion;
     }
 
-    public boolean isDisponible() {
+    public Boolean getDisponible() {
         return disponible;
     }
 
-    public void setDisponible(boolean disponible) {
+    public void setDisponible(Boolean disponible) {
         this.disponible = disponible;
     }
 
-    public int getNumPaginas() {
+    public Integer getNumPaginas() {
         return numPaginas;
     }
 
-    public void setNumPaginas(int numPaginas) {
+    public void setNumPaginas(Integer numPaginas) {
         this.numPaginas = numPaginas;
     }
 
-    public double getValoracionMedia() {
+    public Double getValoracionMedia() {
         return valoracionMedia;
     }
 
-    public void setValoracionMedia(double valoracionMedia) {
+    public void setValoracionMedia(Double valoracionMedia) {
         this.valoracionMedia = valoracionMedia;
     }
 

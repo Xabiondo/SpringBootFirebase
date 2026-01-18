@@ -1,4 +1,4 @@
-package org.example;
+package org.garcia;
 
 
 import org.springframework.boot.SpringApplication;
