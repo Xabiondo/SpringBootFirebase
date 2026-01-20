@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.api.core.ApiFuture;
 import com.google.cloud.firestore.*;
 import com.google.firebase.cloud.FirestoreClient;
+import com.google.protobuf.Api;
 import org.garcia.dto.LibroDto;
 import org.garcia.dto.LibroResponse;
 import org.springframework.stereotype.Service;
@@ -20,20 +21,23 @@ public class LibroService {
 
     private static final String COLLECTION_NAME = "libros";
 
-    public LibroResponse guardarLibro(LibroDto libro) {
+    public LibroResponse guardarLibro(LibroDto libro) throws ExecutionException, InterruptedException {
         Firestore baseDeDatos = FirestoreClient.getFirestore();
         DocumentReference docRef = baseDeDatos.collection(COLLECTION_NAME).document();
 
-        docRef.set(libro);
+        ApiFuture<WriteResult> future = docRef.set(libro);
+        future.get();
 
         return new LibroResponse(docRef.getId(), libro);
     }
 
-    public LibroResponse cambiarLibro(String id, LibroDto libro) {
+    public LibroResponse cambiarLibro(String id, LibroDto libro) throws ExecutionException, InterruptedException {
         Firestore baseDeDatos = FirestoreClient.getFirestore();
         DocumentReference referenciaDocumento = baseDeDatos.collection(COLLECTION_NAME).document(id);
 
-        referenciaDocumento.set(libro);
+        ApiFuture<DocumentSnapshot> future = referenciaDocumento.get();
+        future.get();
+
 
         return new LibroResponse(id, libro);
     }
@@ -63,7 +67,7 @@ public class LibroService {
                 .collect(Collectors.toList());
     }
 
-    public LibroResponse actualizarLibro(String id, LibroDto cambios) {
+    public LibroResponse actualizarLibro(String id, LibroDto cambios) throws ExecutionException, InterruptedException {
         Firestore baseDeDatos = FirestoreClient.getFirestore();
         DocumentReference referenciaDocumento = baseDeDatos.collection(COLLECTION_NAME).document(id);
 
@@ -71,16 +75,22 @@ public class LibroService {
         mapper.setSerializationInclusion(JsonInclude.Include.NON_NULL);
         Map<String, Object> mapaActualizados = mapper.convertValue(cambios, Map.class);
 
-        if (!mapaActualizados.isEmpty()) {
-            referenciaDocumento.update(mapaActualizados);
+        if (mapaActualizados.isEmpty()) {
+            throw new  IllegalArgumentException("no se enviaron datos para actualizar");
+
         }
 
+        ApiFuture<WriteResult> futureActualizacion = referenciaDocumento.update(mapaActualizados);
+        futureActualizacion.get();
         return new LibroResponse(id, cambios);
     }
 
-    public void borrarLibro(String id) {
+    public void borrarLibro(String id) throws ExecutionException, InterruptedException {
         Firestore baseDeDatos = FirestoreClient.getFirestore();
-        baseDeDatos.collection(COLLECTION_NAME).document(id).delete();
+        DocumentReference referenciaDelete = baseDeDatos.collection(COLLECTION_NAME).document(id);
+
+        ApiFuture<WriteResult> futureDelete = referenciaDelete.delete();
+        futureDelete.get() ;
     }
 
     public List<LibroResponse> busquedaPersonalizada(String genero, Boolean disponible,

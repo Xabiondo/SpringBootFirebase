@@ -22,7 +22,7 @@ public class LibroController {
     }
 
     @PostMapping
-    public ResponseEntity<LibroResponse> guardarLibro(@Valid @RequestBody LibroDto libroDto) {
+    public ResponseEntity<LibroResponse> guardarLibro(@Valid @RequestBody LibroDto libroDto) throws ExecutionException, InterruptedException {
         LibroResponse guardado = libroService.guardarLibro(libroDto);
         return new ResponseEntity<>(guardado, HttpStatus.CREATED);
     }
@@ -43,13 +43,13 @@ public class LibroController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<LibroResponse> cambioTotal(@PathVariable String id, @Valid @RequestBody LibroDto libroDto) {
+    public ResponseEntity<LibroResponse> cambioTotal(@PathVariable String id, @Valid @RequestBody LibroDto libroDto) throws ExecutionException, InterruptedException {
         LibroResponse actualizado = libroService.cambiarLibro(id, libroDto);
         return ResponseEntity.ok(actualizado);
     }
 
     @PatchMapping("/{id}")
-    public ResponseEntity<LibroResponse> cambioParcial(@PathVariable String id, @RequestBody LibroDto libroDto) {
+    public ResponseEntity<LibroResponse> cambioParcial(@PathVariable String id, @RequestBody LibroDto libroDto) throws ExecutionException, InterruptedException {
         LibroResponse actualizado = libroService.actualizarLibro(id, libroDto);
         return ResponseEntity.ok(actualizado);
     }
